@@ -31,3 +31,9 @@ class Wheel(object):
 
 	def exist(self,pos):
 		return self.data[pos % self.size] != None
+
+	def print_bits(self):
+		bits = ''
+		for bit in self.data:
+			bits = bits + str(bit)
+		return bits

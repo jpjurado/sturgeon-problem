@@ -53,6 +53,28 @@ def encryp_xor(wheels,value):
 		data[index] = val ^ wheels[index]
 	return [arrayToInt(data),data]
 
+def encryp(wheels,value):
+	data = intToArray(value)
+	for index,val in enumerate(data):
+		data[index] = val ^ wheels[index]
+	if wheels[5]:
+		swap(data,0,4)
+	if wheels[6]:
+		swap(data,0,1)
+	if wheels[7]:
+		swap(data,1,2)
+	if wheels[8]:
+		swap(data,2,3)
+	if wheels[9]:
+		swap(data,3,4)
+	return [arrayToInt(data),data]
+
+def swap(data,index_1,index_2):
+	temp = data[index_1]
+	data[index_1] = data[index_2]
+	data[index_2] = temp
+	return data
+
 def arrayToInt(array):
 	number = ''
 	for bit in array:
@@ -128,26 +150,6 @@ for index,value in enumerate(cipher_message):
 			for index_wheel in range(index_message+1,index_sturgeon+1):
 				wheels[5+index_wheel].set(index,1)
 		#print 'Set one','Result: ',encrypt_bits,intToArray(value),index_message,index_sturgeon
-	if value == 0b10000:
-		index_message = encrypt_bits.index(1)
-		index_sturgeon = intToArray(value).index(1)
-		if index_message == index_sturgeon:
-			wheels[5].set(index,0)
-			wheels[6].set(index,0)
-		elif index_message == 4:
-			wheels[5].set(index,1)
-			wheels[6].set(index,0)
-			print 'Start one','Result: ',getCurrentValues(index)
-		#print encrypt_bits,intToArray(value),index_message,index_sturgeon
-	elif value == 0b01111:
-		index_message = encrypt_bits.index(0)
-		index_sturgeon = intToArray(value).index(0)
-		if index_message == index_sturgeon:
-			wheels[5].set(index,0)
-			wheels[6].set(index,0)
-		elif index_message == 4:
-			wheels[5].set(index,1)
-			wheels[6].set(index,0)
 		"""
 		else:
 			print 'Set one','Result: ',getCurrentValues(index)
@@ -179,15 +181,36 @@ for index,value in enumerate(cipher_message):
 			print 'Set one','Result: ',getCurrentValues(index)
 			print encrypt_bits,intToArray(value),index_message,index_sturgeon
 
+for index,value in enumerate(cipher_message):
+	option_wheels = getCurrentValues(index)
+	if option_wheels.count(None) == 1:
+		index_none = option_wheels.index(None)
+		option_1 = list(option_wheels)
+		option_2 = list(option_wheels)
+		option_1[index_none] = 1
+		option_2[index_none] = 0
+		[encrypt_1,encrypt_bits_1] = encryp(option_1,plain_message[index])
+		[encrypt_2,encrypt_bits_2] = encryp(option_2,plain_message[index])
+		if value != encrypt_1 or value != encrypt_2:
+			if value == encrypt_1:
+				print 'Hello 1'
+				wheels[index_none].set(index,1)
+			elif value == encrypt_2:
+				print 'Hello 0'
+				wheels[index_none].set(index,0)
+
+
+
+
 print 'Cont',cont
 
-print wheels[0].size,wheels[0].getTotal()
-print wheels[1].size,wheels[1].getTotal()
-print wheels[2].size,wheels[2].getTotal()
-print wheels[3].size,wheels[3].getTotal()
-print wheels[4].size,wheels[4].getTotal()
-print wheels[5].size,wheels[5].getTotal()
-print wheels[6].size,wheels[6].getTotal()
-print wheels[7].size,wheels[7].getTotal()
-print wheels[8].size,wheels[8].getTotal()
-print wheels[9].size,wheels[9].getTotal()
+print wheels[0].size,wheels[0].getTotal(),wheels[0].print_bits()
+print wheels[1].size,wheels[1].getTotal(),wheels[1].print_bits()
+print wheels[2].size,wheels[2].getTotal(),wheels[2].print_bits()
+print wheels[3].size,wheels[3].getTotal(),wheels[3].print_bits()
+print wheels[4].size,wheels[4].getTotal(),wheels[4].print_bits()
+print wheels[5].size,wheels[5].getTotal(),wheels[5].print_bits()
+print wheels[6].size,wheels[6].getTotal(),wheels[6].print_bits()
+print wheels[7].size,wheels[7].getTotal(),wheels[7].print_bits()
+print wheels[8].size,wheels[8].getTotal(),wheels[8].print_bits()
+print wheels[9].size,wheels[9].getTotal(),wheels[9].print_bits()
